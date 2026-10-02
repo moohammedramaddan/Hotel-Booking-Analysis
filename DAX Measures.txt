@@ -1,0 +1,203 @@
+=========================================
+HOTEL BOOKING DASHBOARD
+DAX MEASURES
+Prepared by: Mustafa Ahmed
+=========================================
+
+-------------------------
+ADR
+-------------------------
+
+Average ADR = 
+AVERAGE(
+    Fact_Bookings[adr]
+)
+
+Median ADR = 
+MEDIAN(
+    Fact_Bookings[adr]
+)
+
+-------------------------
+Core
+-------------------------
+
+All Bookings = 
+CALCULATE(
+    [Total Booking],
+    ALL(Fact_Bookings[hotel])
+)
+
+Cancellation Rate = 
+DIVIDE(
+    [Cancelled Bookings],
+    [All Bookings]
+)	
+
+Cancelled Bookings = 
+CALCULATE(
+    [All Bookings],
+    Fact_Bookings[is_canceled] = "Canceled"
+)
+
+Confirmed Bookings = 
+[All Bookings] - [Cancelled Bookings]
+
+-------------------------
+Customer
+-------------------------
+
+Repeated Guests = 
+CALCULATE(
+    [Total Booking],
+    Fact_Bookings[is_repeated_guest]= "Repeated"
+)
+
+Repeated Rate = 
+DIVIDE(
+    [Repeated Guests],
+    [Total Booking]
+)
+
+-------------------------
+Family
+-------------------------
+
+Family Bookings = 
+CALCULATE(
+[Total Booking],
+Fact_Bookings[is_family]="Family"
+)
+
+Family Rate = 
+DIVIDE(
+[Family Bookings],
+[Total Booking]
+)
+
+-------------------------
+LeadTime
+-------------------------
+
+Average Lead Time = 
+AVERAGE(
+    Fact_Bookings[lead_time]
+)
+
+Median Lead Time = 
+MEDIAN(
+    Fact_Bookings[lead_time]
+)
+
+
+-------------------------
+Requests
+-------------------------
+
+Average Requests = 
+AVERAGE(
+Fact_Bookings[total_of_special_requests]
+)
+
+-------------------------
+Revenue
+-------------------------
+
+All_Potential_Rev. = 
+SUM(Fact_Bookings[Total Revenue])
+
+Lost Revenue = 
+CALCULATE(
+    SUM(Fact_Bookings[Total Revenue]),
+    Fact_Bookings[is_canceled] = "Canceled"
+)
+
+Revenue Per Bookking = 
+DIVIDE(
+    [Total Revenue],
+    [Total Booking]
+)
+
+Revenue vs. Lose = 
+DIVIDE(
+    [Total Revenue],
+    [All_Potential_Rev.]
+)
+
+Total Revenue = 
+CALCULATE(
+    SUM(Fact_Bookings[Total Revenue]),
+    Fact_Bookings[is_canceled] = "Not Canceled"
+)
+
+-------------------------
+Stay
+-------------------------
+
+Average Stay = 
+AVERAGE(
+    Fact_Bookings[Total Nights ]
+)
+
+Median Stay = 
+MEDIAN(
+    Fact_Bookings[Total Nights ]
+)
+
+-------------------------
+Time Intelligence
+-------------------------
+
+Booking Growth % = 
+DIVIDE(
+    [Confirmed Bookings]-[Bookings PY],
+    [Bookings PY]
+)
+
+Bookings PY = 
+CALCULATE(
+    [Confirmed Bookings],
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+
+Bookings YTD = 
+TOTALYTD(
+    [Confirmed Bookings],
+    Dim_Date[Date]
+)
+
+Cancellation Growth % = 
+DIVIDE(
+    [Cancelled Bookings]-[Cancelled PY],
+    [Cancelled PY]
+)
+
+Cancelled PY = 
+CALCULATE(
+    [Cancelled Bookings],
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+
+Lost Revenue YTD = 
+TOTALYTD(
+    [Lost Revenue],
+    Dim_Date[Date]
+)
+
+Revenue Growth % = 
+DIVIDE(
+    [Total Revenue] - [Revenue PY],
+    [Revenue PY]
+)
+
+Revenue PY = 
+CALCULATE(
+    [Total Revenue],
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+
+Revenue YTD = 
+TOTALYTD(
+    [Total Revenue],
+    Dim_Date[Date]
+)
